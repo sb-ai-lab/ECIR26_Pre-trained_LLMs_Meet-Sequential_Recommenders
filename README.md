@@ -51,7 +51,17 @@ where $w$ and $b$ are learnable parameters.
 \text{Loss} = \alpha \cdot \text{Loss}_{distil} + (1 - \alpha) \cdot \text{Loss}_{model}
 ```
 
-where $\text{Loss}_{distil} = \text{MSE}(H_k(\mathcal{S}_u), T(E(P(u))))$ aligns internal representations with LLM profiles. Since $\text{Loss}_{distil}$ is often much smaller than $\text{Loss}_{model}$, we introduce dynamic scaling: $\beta = \text{sg}\left(\frac{\text{Loss}_{model}}{\text{Loss}_{distil}}\right)$.
+where $Loss_{distil} = MSE(H_k(\mathcal{S}_{u}), T(E(P(u))))$ aligns internal internal representations with LLM profiles.
+
+Since distillation loss is often much less then model loss, a dynamic scaling factor $\beta$ is introduced.
+
+```math
+\text{Loss} = \alpha \cdot \beta \cdot \text{Loss}_{distil} + (1 - \alpha) \cdot \text{Loss}_{model}
+```
+
+```math
+\beta = detach(\frac{\mathcal{Loss}_{model}}{\mathcal{Loss}_{distill}})
+```
 
 **Fine-tuning Stage**: We remove the auxiliary task and train exclusively on next-item prediction to refine recommendation quality while preserving distilled knowledge.
 
@@ -264,7 +274,7 @@ If you find this work useful for your research, please cite our paper:
   title={Pre-trained LLMs Meet Sequential Recommenders: Efficient User-Centric Knowledge Distillation},
   author={[Author Names]},
   journal={[Journal/Conference]},
-  year={2025}
+  year={2026}
 }
 ```
 
